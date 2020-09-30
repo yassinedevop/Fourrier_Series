@@ -6,7 +6,7 @@
 float Rad;
 int x = 0,n ,iteration = 1;
 float x2 = 0 ,  y2 = 0 ,prevx , prevy;
-
+float cte = 0.01;
 
 
 
@@ -26,8 +26,6 @@ int main(int argc, char **argv) {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glLoadIdentity();
-
-
 		while(SDL_PollEvent(&event)){
 		switch (event.type) {
 			case SDL_QUIT :
@@ -36,6 +34,10 @@ int main(int argc, char **argv) {
 			default:
 				break;
 		}
+		}
+		if(event.key.type == SDL_KEYDOWN ){
+			SDL_Quit();
+			exit(0);
 		}
 		x2 = 0;
 		y2 = 0;
@@ -53,22 +55,24 @@ int main(int argc, char **argv) {
 
 
 			glColor3f(1,0,0);
-			circle(prevx,prevy,Rad ,0);
+			circle_stroke(prevx,prevy,Rad ,3);
 			glColor3f(0,1,0);
-			line(prevx,prevy,x2,y2);
-			circle(x2,y2,Rad/40 , 1);
+			line_stroke(prevx,prevy,x2,y2, 0.01);
+			circle(x2,y2,Rad/40 , 5.0);
 		}
-		wave.insert(wave.begin() , y2);
+			wave.insert(wave.begin() , y2);
 			glColor3f(1,1,0);
-			line(x2,y2,0.6,y2);
+			line_stroke(x2,y2,0.6,y2,0.01);
 
 			glTranslatef(0.6,0,0);
-			glBegin(GL_LINE_STRIP);
+			glPointSize(5.0);
+			glBegin(GL_QUADS);
 
-
-			for(unsigned int i = 0 ; i< wave.size() ; i++){
-
+			for(unsigned int i = 0 ; i< wave.size()-1 ; i++){
 				glVertex2f(i*0.001,wave[i]);
+				glVertex2f((i+1)*0.001,wave[i+1]);
+				glVertex2f(i*0.001 + cte ,wave[i] + cte);
+				glVertex2f((i+1)*0.001 + cte,wave[i+1] + cte);
 
 			}
 
